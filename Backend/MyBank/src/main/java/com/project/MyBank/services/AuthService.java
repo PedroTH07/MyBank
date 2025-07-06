@@ -55,7 +55,7 @@ public class AuthService {
     public ResponseEntity<?> login(UserRequestDto data, HttpServletResponse response) throws UsernameNotFoundException {
         User user = this.repository.findByEmail(data.email()).orElseThrow(() -> new UsernameNotFoundException("user not found at login"));
 
-        if (user.getPassword().equals(this.encoder.encode(data.password()))) {
+        if (this.encoder.matches(data.password(), user.getPassword())) {
 
             String token = this.jwtService.generateToken(user);
 

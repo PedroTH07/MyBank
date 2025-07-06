@@ -20,8 +20,8 @@ import java.util.Collections;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
-    private JwtService jwtService;
-    private UserRepository repository;
+    private final JwtService jwtService;
+    private final UserRepository repository;
 
     public SecurityFilter(JwtService service, UserRepository repository) {
         this.jwtService = service;

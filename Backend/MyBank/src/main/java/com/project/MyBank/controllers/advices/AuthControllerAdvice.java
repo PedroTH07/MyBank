@@ -2,6 +2,7 @@ package com.project.MyBank.controllers.advices;
 
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.project.MyBank.infra.exceptions.CookieNotFoundException;
 import com.project.MyBank.infra.exceptions.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,5 +29,12 @@ public class AuthControllerAdvice {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Erro ao verificar o token JWT");
+    }
+
+    @ExceptionHandler(CookieNotFoundException.class)
+    public ResponseEntity<String> cookieNotFoundHandler(CookieNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(e.getMessage());
     }
 }

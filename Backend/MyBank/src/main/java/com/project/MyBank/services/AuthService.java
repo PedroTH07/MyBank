@@ -8,6 +8,7 @@ import com.project.MyBank.infra.exceptions.UserAlreadyExistsException;
 import com.project.MyBank.infra.security.JwtService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +27,7 @@ public class AuthService {
         this.jwtService = jwt;
     }
 
+    @Transactional
     public UserResponseDto register(UserRequestDto data, HttpServletResponse response) throws UserAlreadyExistsException {
         var userExists = this.repository.findByEmail(data.email());
         if (userExists.isPresent()) {

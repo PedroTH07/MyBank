@@ -1,4 +1,4 @@
-package com.project.MyBank.controllers;
+package com.project.MyBank.controllers.rest;
 
 import com.project.MyBank.domain.User;
 import com.project.MyBank.domain.UserRepository;

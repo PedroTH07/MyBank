@@ -4,9 +4,9 @@ Este é um simples projeto de um **banco simplificado**, com autenticação e tr
 
 🐳 O projeto usa containers dockers do backend feito com Java Spring, do frontend feito em Angular, e do banco de dados relacional PostgreSQL. Para orquestrar e subir os containers juntos é usado o docker compose para fazer o build do back e do frontend e subir a imagem do postgres.
 
-**Para mais detalhes do backend (clique aqui)[./frontend/MyBank/README.md]**
+**Para mais detalhes do backend [clique aqui](./frontend/MyBank/README.md)**
 
-**Para mais detalhes do frontend (clique aqui)[./backend/MyBank/README.md]**
+**Para mais detalhes do frontend [clique aqui](./backend/MyBank/README.md)**
 
 ## 🚀 Como rodar o projeto localmente
 

@@ -19,11 +19,21 @@ public class JwtService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public String generateToken(User user) throws JWTCreationException {
+    public String generateToken(String userEmail) throws JWTCreationException {
+        return JWT.create()
+                .withIssuer("MyBank")
+                .withSubject(userEmail)
+                .withExpiresAt(this.generateExpirationDate(5))
+                .withClaim("type", "access")
+                .sign(Algorithm.HMAC256(this.secret));
+    }
+
+    public String generateRefreshToken(User user) throws JWTCreationException {
         return JWT.create()
                 .withIssuer("MyBank")
                 .withSubject(user.getEmail())
-                .withExpiresAt(this.generateExpirationDate())
+                .withExpiresAt(this.generateExpirationDate(60))
+                .withClaim("type", "refresh")
                 .sign(Algorithm.HMAC256(this.secret));
     }
 
@@ -52,7 +62,7 @@ public class JwtService {
         return null;
     }
 
-    private Instant generateExpirationDate() {
-        return LocalDateTime.now().plusMinutes(5).toInstant(ZoneOffset.of("-03:00"));
+    private Instant generateExpirationDate(Integer minutes) {
+        return LocalDateTime.now().plusMinutes(minutes).toInstant(ZoneOffset.of("-03:00"));
     }
 }

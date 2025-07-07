@@ -4,6 +4,7 @@ import com.project.MyBank.domain.User;
 import com.project.MyBank.domain.UserRepository;
 import com.project.MyBank.domain.UserRequestDto;
 import com.project.MyBank.domain.UserResponseDto;
+import com.project.MyBank.infra.exceptions.CookieNotFoundException;
 import com.project.MyBank.infra.exceptions.UserAlreadyExistsException;
 import com.project.MyBank.infra.security.JwtService;
 import jakarta.servlet.http.Cookie;
@@ -41,7 +42,7 @@ public class AuthService {
         user.setPassword(userPassword);
         user.setMoney(999.99);
 
-        String token = this.jwtService.generateToken(user);
+        String token = this.jwtService.generateToken(user.getEmail());
 
         Cookie cookie = new Cookie("jwt", token);
         cookie.setHttpOnly(true);
@@ -49,7 +50,16 @@ public class AuthService {
         cookie.setPath("/");
         cookie.setMaxAge(5 * 60);
 
+        String refreshToken = this.jwtService.generateRefreshToken(user);
+
+        Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(false);
+        refreshCookie.setPath("/auth/refresh");
+        refreshCookie.setMaxAge(60 * 60);
+
         response.addCookie(cookie);
+        response.addCookie(refreshCookie);
 
         return new UserResponseDto(this.repository.save(user));
     }
@@ -59,7 +69,7 @@ public class AuthService {
 
         if (this.encoder.matches(data.password(), user.getPassword())) {
 
-            String token = this.jwtService.generateToken(user);
+            String token = this.jwtService.generateToken(user.getEmail());
 
             Cookie cookie = new Cookie("jwt", token);
             cookie.setHttpOnly(true);
@@ -67,10 +77,36 @@ public class AuthService {
             cookie.setPath("/");
             cookie.setMaxAge(5 * 60);
 
+            String refreshToken = this.jwtService.generateRefreshToken(user);
+
+            Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+            refreshCookie.setHttpOnly(true);
+            refreshCookie.setSecure(false);
+            refreshCookie.setPath("/auth/refresh");
+            refreshCookie.setMaxAge(60 * 60);
+
             response.addCookie(cookie);
+            response.addCookie(refreshCookie);
 
             return ResponseEntity.ok().body(new UserResponseDto(user));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("incorrect password");
     }
+
+    public ResponseEntity<?> refresh(String token, HttpServletResponse response) throws CookieNotFoundException {
+        if (token == null) throw new CookieNotFoundException("refresh token not found");
+
+        var validateToken = this.jwtService.validateToken(token);
+        var accessToken = this.jwtService.generateToken(validateToken);
+
+        Cookie cookie = new Cookie("jwt", accessToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(5 * 60);
+
+        response.addCookie(cookie);
+        return ResponseEntity.ok("token enviado");
+    }
+
 }

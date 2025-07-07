@@ -1,5 +1,6 @@
 package com.project.MyBank.services;
 
+import com.project.MyBank.domain.PaymentRequestDto;
 import com.project.MyBank.domain.User;
 import com.project.MyBank.domain.UserRepository;
 import com.project.MyBank.domain.UserResponseDto;
@@ -31,6 +32,10 @@ public class UserService {
 
         User user = this.repository.findByEmail(subject).orElseThrow(() -> new UsernameNotFoundException("user not found at /users/me"));
         return ResponseEntity.ok().body(new UserResponseDto(user));
+    }
+
+    public ResponseEntity<?> pay(PaymentRequestDto data) {
+        return ResponseEntity.badRequest().body("depois eu termino");
     }
 
 }

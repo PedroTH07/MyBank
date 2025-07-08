@@ -3,7 +3,7 @@
 ## 404
 Opa! O frontend ainda não está pronto (na verdade nem comecei)
 
-**Para voltar ao Readme do projeto [clique aqui](../../README.md)
+**Para voltar ao Readme do projeto [clique aqui](../../README.md)**
 
 
 ## 🅰️ README gerado pelo angular

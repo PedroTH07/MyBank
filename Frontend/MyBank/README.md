@@ -1,7 +1,12 @@
 # MyBank frontend 🅰️
 
+## 404
+Opa! O frontend ainda não está pronto (na verdade nem comecei)
 
-## README gerado pelo angular 🅰️
+**Para voltar ao Readme do projeto [clique aqui](../../README.md)
+
+
+## 🅰️ README gerado pelo angular
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.14.
 

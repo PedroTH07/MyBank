@@ -32,3 +32,29 @@ POST /refresh
 > Rota para atualizar o cookie sem a necessidade de refazer o login
 
 **🔐 Autenticação: necessário o envio do cookie refresh token**
+<br/>
+
+### `/users`
+
+```http
+GET /
+```
+> Retorna todos os usuários registrados (rota de teste)
+
+**🔓 Autenticação: não requerida**
+<br/>
+
+```http
+GET /me
+```
+> Retorna as informações daquele usuário, pego pelo token JWT dentro do cookie
+
+**🔐 Autenticação: necessário**
+<br/>
+
+```http
+POST /pay
+```
+> (ainda não implementado) Rota para realizar transações
+
+**🔐 Autenticação: necessário**

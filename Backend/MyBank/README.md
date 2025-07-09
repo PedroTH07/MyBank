@@ -16,6 +16,7 @@ POST /register
 **🔓 Autenticação: não requerida**
 
 <br/>
+
 ```http
 POST /login
 ```
@@ -24,6 +25,7 @@ POST /login
 **🔓 Autenticação: não requerida**
 
 <br/>
+
 ```http
 POST /refresh
 ```

@@ -2,8 +2,9 @@ package com.project.MyBank.controllers.advices;
 
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.project.MyBank.infra.exceptions.CookieNotFoundException;
-import com.project.MyBank.infra.exceptions.UserAlreadyExistsException;
+import com.project.MyBank.domain.exceptions.CookieNotFoundException;
+import com.project.MyBank.domain.exceptions.IncorrectPasswordException;
+import com.project.MyBank.domain.exceptions.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -36,5 +37,10 @@ public class AuthControllerAdvice {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(e.getMessage());
+    }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<String> incorrectPasswordHandler(IncorrectPasswordException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

@@ -2,22 +2,22 @@ package com.project.MyBank.services;
 
 import com.project.MyBank.domain.User;
 import com.project.MyBank.domain.UserRepository;
-import com.project.MyBank.domain.UserRequestDto;
-import com.project.MyBank.domain.UserResponseDto;
-import com.project.MyBank.infra.exceptions.CookieNotFoundException;
-import com.project.MyBank.infra.exceptions.UserAlreadyExistsException;
+import com.project.MyBank.domain.dtos.UserRequestDto;
+import com.project.MyBank.domain.dtos.UserResponseDto;
+import com.project.MyBank.domain.exceptions.CookieNotFoundException;
+import com.project.MyBank.domain.exceptions.IncorrectPasswordException;
+import com.project.MyBank.domain.exceptions.UserAlreadyExistsException;
 import com.project.MyBank.infra.security.JwtService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
+
     private final PasswordEncoder encoder;
     private final UserRepository repository;
     private final JwtService jwtService;
@@ -43,20 +43,10 @@ public class AuthService {
         user.setMoney(999.99);
 
         String token = this.jwtService.generateToken(user.getEmail());
-
-        Cookie cookie = new Cookie("jwt", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(5 * 60);
+        Cookie cookie = this.createAccessCookie(token);
 
         String refreshToken = this.jwtService.generateRefreshToken(user);
-
-        Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(false);
-        refreshCookie.setPath("/auth/refresh");
-        refreshCookie.setMaxAge(60 * 60);
+        Cookie refreshCookie = this.createRefreshCookie(refreshToken);
 
         response.addCookie(cookie);
         response.addCookie(refreshCookie);
@@ -64,49 +54,51 @@ public class AuthService {
         return new UserResponseDto(this.repository.save(user));
     }
 
-    public ResponseEntity<?> login(UserRequestDto data, HttpServletResponse response) throws UsernameNotFoundException {
+    public UserResponseDto login(UserRequestDto data, HttpServletResponse response) throws UsernameNotFoundException {
         User user = this.repository.findByEmail(data.email()).orElseThrow(() -> new UsernameNotFoundException("user not found at login"));
 
-        if (this.encoder.matches(data.password(), user.getPassword())) {
-
-            String token = this.jwtService.generateToken(user.getEmail());
-
-            Cookie cookie = new Cookie("jwt", token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(false);
-            cookie.setPath("/");
-            cookie.setMaxAge(5 * 60);
-
-            String refreshToken = this.jwtService.generateRefreshToken(user);
-
-            Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
-            refreshCookie.setHttpOnly(true);
-            refreshCookie.setSecure(false);
-            refreshCookie.setPath("/auth/refresh");
-            refreshCookie.setMaxAge(60 * 60);
-
-            response.addCookie(cookie);
-            response.addCookie(refreshCookie);
-
-            return ResponseEntity.ok().body(new UserResponseDto(user));
+        if (!this.encoder.matches(data.password(), user.getPassword())) {
+            throw new IncorrectPasswordException("senha incorreta");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("incorrect password");
+
+        String token = this.jwtService.generateToken(user.getEmail());
+        Cookie cookie = createAccessCookie(token);
+
+        String refreshToken = this.jwtService.generateRefreshToken(user);
+        Cookie refreshCookie = createRefreshCookie(refreshToken);
+
+        response.addCookie(cookie);
+        response.addCookie(refreshCookie);
+
+        return new UserResponseDto(user);
     }
 
-    public ResponseEntity<?> refresh(String token, HttpServletResponse response) throws CookieNotFoundException {
+    public void refresh(String token, HttpServletResponse response) throws CookieNotFoundException {
         if (token == null) throw new CookieNotFoundException("refresh token not found");
 
         var validateToken = this.jwtService.validateToken(token);
         var accessToken = this.jwtService.generateToken(validateToken);
 
-        Cookie cookie = new Cookie("jwt", accessToken);
+        Cookie cookie = createAccessCookie(accessToken);
+
+        response.addCookie(cookie);
+    }
+
+    private Cookie createAccessCookie(String token) {
+        Cookie cookie = new Cookie("jwt", token);
         cookie.setHttpOnly(true);
         cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(5 * 60);
-
-        response.addCookie(cookie);
-        return ResponseEntity.ok("token enviado");
+        return cookie;
     }
 
+    private Cookie createRefreshCookie(String token) {
+        Cookie cookie = new Cookie("refresh_token", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/auth/refresh");
+        cookie.setMaxAge(60 * 60);
+        return cookie;
+    }
 }

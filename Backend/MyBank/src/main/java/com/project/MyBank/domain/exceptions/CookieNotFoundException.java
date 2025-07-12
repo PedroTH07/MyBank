@@ -1,4 +1,4 @@
-package com.project.MyBank.infra.exceptions;
+package com.project.MyBank.domain.exceptions;
 
 public class CookieNotFoundException extends RuntimeException {
     public CookieNotFoundException(String message) {

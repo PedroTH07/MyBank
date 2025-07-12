@@ -1,4 +1,4 @@
-package com.project.MyBank.infra.exceptions;
+package com.project.MyBank.domain.exceptions;
 
 public class UserAlreadyExistsException extends RuntimeException {
     public UserAlreadyExistsException(String message) {

@@ -1,4 +1,4 @@
-package com.project.MyBank.domain;
+package com.project.MyBank.domain.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

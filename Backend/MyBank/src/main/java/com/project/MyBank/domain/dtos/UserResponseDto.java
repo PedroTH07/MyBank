@@ -1,4 +1,6 @@
-package com.project.MyBank.domain;
+package com.project.MyBank.domain.dtos;
+
+import com.project.MyBank.domain.User;
 
 import java.util.UUID;
 

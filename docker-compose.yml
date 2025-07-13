@@ -10,6 +10,27 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - mybank_pgdata:/var/lib/postgresql/data
+    networks:
+      - private_network
+  
+  backend:
+    build: ./backend/MyBank
+    container_name: mybank_backend
+    ports:
+      - 8080:8080
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - postgres
+    networks:
+      - private_network
+      - public_network
 
 volumes:
   mybank_pgdata:
+
+networks:
+  private_network:
+    driver: bridge
+  public_network:
+    driver: bridge

@@ -7,11 +7,19 @@ import com.project.MyBank.domain.exceptions.IncorrectPasswordException;
 import com.project.MyBank.domain.exceptions.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class AuthControllerAdvice {
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<String> usernameNotFoundHandler(UsernameNotFoundException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(e.getMessage());
+    }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<String> userExistsHandler(UserAlreadyExistsException e) {

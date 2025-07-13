@@ -1,5 +1,6 @@
 package com.project.MyBank.controllers.advices;
 
+import com.project.MyBank.domain.exceptions.InsufficientMoneyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -13,6 +14,13 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GenericControllerAdvice {
+
+    @ExceptionHandler(InsufficientMoneyException.class)
+    public ResponseEntity<String> insufficientMoneyHandler(InsufficientMoneyException e) {
+        return ResponseEntity
+                .status(HttpStatus.PAYMENT_REQUIRED)
+                .body(e.getMessage());
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> argumentNotValidHandler(MethodArgumentNotValidException e) {

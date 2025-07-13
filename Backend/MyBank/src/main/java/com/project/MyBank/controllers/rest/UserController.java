@@ -2,6 +2,7 @@ package com.project.MyBank.controllers.rest;
 
 import com.project.MyBank.domain.dtos.PaymentRequestDto;
 import com.project.MyBank.domain.User;
+import com.project.MyBank.domain.dtos.PaymentResponseDto;
 import com.project.MyBank.domain.dtos.UserResponseDto;
 import com.project.MyBank.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/pay")
-    public ResponseEntity<?> pay(@RequestBody @Valid PaymentRequestDto data) {
-        return this.service.pay(data);
+    public ResponseEntity<PaymentResponseDto> pay(@RequestBody @Valid PaymentRequestDto data) {
+        return ResponseEntity.ok(this.service.pay(data));
     }
 }

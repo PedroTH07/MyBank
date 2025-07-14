@@ -14,7 +14,7 @@ services:
       - private_network
   
   backend:
-    build: ./backend/MyBank
+    build: ./Backend/MyBank
     container_name: mybank_backend
     ports:
       - 8080:8080
@@ -24,6 +24,14 @@ services:
       - postgres
     networks:
       - private_network
+      - public_network
+
+  frontend:
+    build: ./Frontend/MyBank
+    container_name: mybank_frontend
+    ports:
+      - 4000:4000
+    networks:
       - public_network
 
 volumes:

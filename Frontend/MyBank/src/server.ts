@@ -4,6 +4,7 @@ import express from 'express';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
+import { request } from 'node:http';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -23,6 +24,30 @@ const commonEngine = new CommonEngine();
  * });
  * ```
  */
+
+// proxy para interceptar as chamadas para o backend
+app.use("/api", (req, res) => {
+  const options = {
+    hostname: "backend",
+    port: 8080,
+    path: req.url,
+    method: req.method,
+    headers: req.headers,
+  };
+
+  const proxyReq = request(options, proxyRes => {
+    res.writeHead(proxyRes.statusCode || 500, proxyRes.headers);
+
+    proxyRes.pipe(res, { end: true });
+  });
+
+  proxyReq.on("error", error => {
+    console.error("erro no proxy: ", error.message);
+    res.status(500).send("erro ao conectar no backend");
+  });
+
+  req.pipe(proxyReq, { end: true });
+});
 
 /**
  * Serve static files from /browser

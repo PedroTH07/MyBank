@@ -1,3 +1,11 @@
 <h1>Usuários</h1>
 
-<span>{{usersList()}}</span>
+@for (user of usersList(); track user.userId) {
+    <div>
+        id: {{user.userId}}
+        nome: {{user.name}}
+        email: {{user.email}}
+        senha: {{user.password}}
+        dinehiro: {{user.money}}
+    </div>
+}

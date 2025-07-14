@@ -15,7 +15,8 @@ export interface User {
   providedIn: 'root'
 })
 export class UserService {
-  private readonly backendUrl: string = "http://backend:8080";
+  // para que o express consiga interceptar a chamada e leva-la para o backend corretamente
+  private readonly backendUrl: string = "/api";
 
   constructor(private http: HttpClient) { }
 

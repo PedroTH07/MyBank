@@ -5,10 +5,6 @@ import jakarta.validation.constraints.*;
 import java.util.UUID;
 
 public record PaymentRequestDto(
-        @Email(message = "precisa do email do pagador")
-        @NotBlank(message = "precisa ter um pagador")
-        String payerEmail,
-
         @Email(message = "precisa do email do recebedor")
         @NotBlank(message = "precisa ter um recebedor")
         String payeeEmail,

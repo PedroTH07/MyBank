@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -45,13 +44,18 @@ public class UserService {
     }
 
     @Transactional
-    public PaymentResponseDto pay(PaymentRequestDto data) {
-        List<User> users = this.repository.findUsersForPayment(data.payerEmail(), data.payeeEmail());
+    public PaymentResponseDto pay(PaymentRequestDto data, HttpServletRequest request) {
+        var token = this.jwtService.recoverToken(request);
+        if (token == null) throw new CookieNotFoundException("cookie jwt não encontrado, impossível recuperar o usuário da sessão");
+
+        String payerEmail = this.jwtService.validateToken(token);
+
+        List<User> users = this.repository.findUsersForPayment(payerEmail, data.payeeEmail());
         if (users.size() != 2) throw new UsernameNotFoundException("um ou mais usuários não enconrados");
 
         User payerUser, payeeUser;
 
-        if (users.getFirst().getEmail().equals(data.payerEmail())) {
+        if (users.getFirst().getEmail().equals(payerEmail)) {
             payerUser = users.getFirst();
             payeeUser = users.getLast();
         } else {

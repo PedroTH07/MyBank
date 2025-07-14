@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/pay")
-    public ResponseEntity<PaymentResponseDto> pay(@RequestBody @Valid PaymentRequestDto data) {
-        return ResponseEntity.ok(this.service.pay(data));
+    public ResponseEntity<PaymentResponseDto> pay(@RequestBody @Valid PaymentRequestDto data, HttpServletRequest request) {
+        return ResponseEntity.ok(this.service.pay(data, request));
     }
 }

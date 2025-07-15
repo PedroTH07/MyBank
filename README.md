@@ -23,4 +23,4 @@ cd MyBank
 docker compose up -d
 ```
 
-acesse o frontend na URL `localhost:4200`
+acesse o frontend na URL `localhost:4000`

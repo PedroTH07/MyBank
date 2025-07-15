@@ -58,6 +58,15 @@ GET /me
 ```http
 POST /pay
 ```
-> (ainda não implementado) Rota para realizar transações
+> Rota para realizar transações entre usários
 
 **🔐 Autenticação: necessário**
+
+<br />
+
+```http
+PUT /image
+```
+> Atualiza a imagem (ou adiciona uma caso não tenha) de um usuário
+
+**🔐 Autenticação: necessária**

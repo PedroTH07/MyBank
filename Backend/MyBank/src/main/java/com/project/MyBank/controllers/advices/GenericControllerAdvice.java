@@ -8,6 +8,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +16,10 @@ import java.util.Map;
 @ControllerAdvice
 public class GenericControllerAdvice {
 
-    @ExceptionHandler(InsufficientMoneyException.class)
-    public ResponseEntity<String> insufficientMoneyHandler(InsufficientMoneyException e) {
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<String> notFoundHandler(NoHandlerFoundException e) {
         return ResponseEntity
-                .status(HttpStatus.PAYMENT_REQUIRED)
+                .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
 

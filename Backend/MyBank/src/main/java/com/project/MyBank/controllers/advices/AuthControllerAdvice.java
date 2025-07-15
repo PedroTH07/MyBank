@@ -21,11 +21,6 @@ public class AuthControllerAdvice {
                 .body(e.getMessage());
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<String> userExistsHandler(UserAlreadyExistsException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
-
     @ExceptionHandler(JWTCreationException.class)
     public ResponseEntity<String> jwtCreationHandler(JWTCreationException e) {
         return ResponseEntity

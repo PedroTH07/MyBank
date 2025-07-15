@@ -8,10 +8,11 @@ public record UserResponseDto(
         UUID userId,
         String name,
         String email,
-        Double money
+        Double money,
+        String imageUrl
 ) {
 
     public UserResponseDto(User user) {
-        this(user.getUserId(), user.getName(), user.getEmail(), user.getMoney());
+        this(user.getUserId(), user.getName(), user.getEmail(), user.getMoney(), user.getImageUrl());
     }
 }

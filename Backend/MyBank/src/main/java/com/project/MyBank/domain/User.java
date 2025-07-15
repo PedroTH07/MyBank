@@ -30,4 +30,6 @@ public class User {
     private String password;
 
     private Double money;
+
+    private String imageUrl;
 }

@@ -16,7 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,31 +31,48 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
-
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private PasswordEncoder encoder;
+
+    private static final String UPLOAD_DIR = "uploads/";
+
 
     public List<User> findAll() { return this.repository.findAll(); }
 
     public UserResponseDto thisUser(HttpServletRequest request) throws CookieNotFoundException, UsernameNotFoundException {
-        var token = this.jwtService.recoverToken(request);
-        if (token == null) throw new CookieNotFoundException("cookie jwt não encontrado em /users/me");
-
-        String subject = this.jwtService.validateToken(token);
+        String subject = this.getUserEmailBySession(request);
 
         User user = this.repository.findByEmail(subject).orElseThrow(() -> new UsernameNotFoundException("user not found at /users/me"));
         return new UserResponseDto(user);
     }
 
     @Transactional
-    public PaymentResponseDto pay(PaymentRequestDto data, HttpServletRequest request) {
-        var token = this.jwtService.recoverToken(request);
-        if (token == null) throw new CookieNotFoundException("cookie jwt não encontrado, impossível recuperar o usuário da sessão");
+    public String editImage(MultipartFile file, HttpServletRequest request) throws IOException {
+        if (file.isEmpty()) throw new IllegalArgumentException("nenhum arquivo enviado");
 
-        String payerEmail = this.jwtService.validateToken(token);
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) uploadDir.mkdirs();
+
+        String fileName = file.getOriginalFilename() + LocalDateTime.now();
+        Path path = Paths.get(UPLOAD_DIR + fileName);
+        Files.write(path, file.getBytes());
+
+        String userEmail = this.getUserEmailBySession(request);
+
+        User user = this.repository
+                .findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("usuario não encontrado"));
+
+        user.setImageUrl(UPLOAD_DIR + fileName);
+        this.repository.save(user);
+        return UPLOAD_DIR + fileName;
+    }
+
+    @Transactional
+    public PaymentResponseDto pay(PaymentRequestDto data, HttpServletRequest request) {
+        String payerEmail = this.getUserEmailBySession(request);
 
         List<User> users = this.repository.findUsersForPayment(payerEmail, data.payeeEmail());
         if (users.size() != 2) throw new UsernameNotFoundException("um ou mais usuários não enconrados");
@@ -81,4 +105,11 @@ public class UserService {
         return new PaymentResponseDto(data.amount(), responseUsers);
     }
 
+
+    private String getUserEmailBySession(HttpServletRequest request) {
+        var token = this.jwtService.recoverToken(request);
+        if (token == null) throw new CookieNotFoundException("cookie jwt não encontrado na requisição");
+
+        return this.jwtService.validateToken(token);
+    }
 }

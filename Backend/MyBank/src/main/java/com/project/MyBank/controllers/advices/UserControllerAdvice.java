@@ -8,9 +8,17 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 @ControllerAdvice
 public class UserControllerAdvice {
+
+    @ExceptionHandler(MalformedURLException.class)
+    public ResponseEntity<String> malFormedUrlHandler(MalformedURLException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(e.getMessage());
+    }
 
     @ExceptionHandler(InsufficientMoneyException.class)
     public ResponseEntity<String> insufficientMoneyHandler(InsufficientMoneyException e) {

@@ -1,18 +1,18 @@
 package com.project.MyBank.services;
 
-import com.project.MyBank.domain.dtos.PaymentRequestDto;
+import com.project.MyBank.domain.dtos.*;
 import com.project.MyBank.domain.User;
 import com.project.MyBank.domain.UserRepository;
-import com.project.MyBank.domain.dtos.PaymentResponseDto;
-import com.project.MyBank.domain.dtos.UserPaymentResponseDto;
-import com.project.MyBank.domain.dtos.UserResponseDto;
 import com.project.MyBank.domain.exceptions.CookieNotFoundException;
 import com.project.MyBank.domain.exceptions.IncorrectPasswordException;
 import com.project.MyBank.domain.exceptions.InsufficientMoneyException;
 import com.project.MyBank.infra.security.JwtService;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,6 +36,8 @@ public class UserService {
     private JwtService jwtService;
     @Autowired
     private PasswordEncoder encoder;
+    @Autowired
+    private ServletContext servletContext;
 
     private static final String UPLOAD_DIR = "uploads/";
 
@@ -68,6 +71,16 @@ public class UserService {
         user.setImageUrl(UPLOAD_DIR + fileName);
         this.repository.save(user);
         return UPLOAD_DIR + fileName;
+    }
+
+    public ResourceWithContentTypeDto getImage(String imageName) throws MalformedURLException {
+        Path path = Paths.get(UPLOAD_DIR + imageName);
+        Resource resource =  new UrlResource(path.toUri());
+        String contentType = servletContext.getMimeType(path.toString());
+
+        if (contentType == null) contentType = "application/octet-stream";
+
+        return new ResourceWithContentTypeDto(resource, contentType);
     }
 
     @Transactional

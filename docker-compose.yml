@@ -25,6 +25,8 @@ services:
     networks:
       - private_network
       - public_network
+    volumes:
+      - ./Backend/MyBank/uploads:/app/uploads
 
   frontend:
     build: ./Frontend/MyBank

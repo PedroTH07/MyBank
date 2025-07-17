@@ -58,7 +58,7 @@ public class UserService {
         File uploadDir = new File(UPLOAD_DIR);
         if (!uploadDir.exists()) uploadDir.mkdirs();
 
-        String fileName = file.getOriginalFilename() + LocalDateTime.now();
+        String fileName = LocalDateTime.now() + file.getOriginalFilename();
         Path path = Paths.get(UPLOAD_DIR + fileName);
         Files.write(path, file.getBytes());
 
@@ -76,6 +76,9 @@ public class UserService {
     public ResourceWithContentTypeDto getImage(String imageName) throws MalformedURLException {
         Path path = Paths.get(UPLOAD_DIR + imageName);
         Resource resource =  new UrlResource(path.toUri());
+
+        if (!resource.exists() || !resource.isReadable()) throw new MalformedURLException("imagem não encontrada");
+        
         String contentType = servletContext.getMimeType(path.toString());
 
         if (contentType == null) contentType = "application/octet-stream";

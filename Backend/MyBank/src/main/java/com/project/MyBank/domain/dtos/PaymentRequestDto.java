@@ -2,8 +2,6 @@ package com.project.MyBank.domain.dtos;
 
 import jakarta.validation.constraints.*;
 
-import java.util.UUID;
-
 public record PaymentRequestDto(
         @Email(message = "precisa do email do recebedor")
         @NotBlank(message = "precisa ter um recebedor")

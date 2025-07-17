@@ -1,6 +1,5 @@
 package com.project.MyBank.controllers.advices;
 
-import com.project.MyBank.domain.exceptions.InsufficientMoneyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

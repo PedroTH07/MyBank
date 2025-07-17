@@ -4,7 +4,6 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.project.MyBank.domain.exceptions.CookieNotFoundException;
 import com.project.MyBank.domain.exceptions.IncorrectPasswordException;
-import com.project.MyBank.domain.exceptions.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

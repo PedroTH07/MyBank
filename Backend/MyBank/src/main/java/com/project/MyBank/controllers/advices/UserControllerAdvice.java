@@ -16,7 +16,7 @@ public class UserControllerAdvice {
     @ExceptionHandler(MalformedURLException.class)
     public ResponseEntity<String> malFormedUrlHandler(MalformedURLException e) {
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
 

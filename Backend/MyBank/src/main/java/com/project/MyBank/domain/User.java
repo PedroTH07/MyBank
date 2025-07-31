@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -32,4 +34,10 @@ public class User {
     private Double money;
 
     private String imageUrl;
+
+    @OneToMany(mappedBy = "payer")
+    private Set<Transaction> payerTransactions = new HashSet<>();
+
+    @OneToMany(mappedBy = "payee")
+    private Set<Transaction> payeeTransactions = new HashSet<>();
 }

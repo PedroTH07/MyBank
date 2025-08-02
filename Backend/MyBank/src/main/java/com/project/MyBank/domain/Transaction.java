@@ -34,12 +34,12 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "payee")
-    private User peyee;
+    private User payee;
 
     @Column(nullable = false)
     private Double amount;
 
     // TIMESTAMP WITHOUT TIME ZONE no postgres
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime timeStamp = LocalDateTime.now();
+    private LocalDateTime timestamp = LocalDateTime.now();
 }

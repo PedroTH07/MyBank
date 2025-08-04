@@ -35,9 +35,9 @@ public class User {
 
     private String imageUrl;
 
-    @OneToMany(mappedBy = "payer")
+    @OneToMany(mappedBy = "payer", fetch = FetchType.LAZY)
     private Set<Transaction> payerTransactions = new HashSet<>();
 
-    @OneToMany(mappedBy = "payee")
+    @OneToMany(mappedBy = "payee", fetch = FetchType.LAZY)
     private Set<Transaction> payeeTransactions = new HashSet<>();
 }

@@ -1,6 +1,8 @@
 package com.project.MyBank.services;
 
 import com.project.MyBank.domain.dtos.*;
+import com.project.MyBank.domain.Transaction;
+import com.project.MyBank.domain.TransactionRepository;
 import com.project.MyBank.domain.User;
 import com.project.MyBank.domain.UserRepository;
 import com.project.MyBank.domain.exceptions.CookieNotFoundException;
@@ -38,6 +40,8 @@ public class UserService {
     private PasswordEncoder encoder;
     @Autowired
     private ServletContext servletContext;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     private static final String UPLOAD_DIR = "uploads/";
 
@@ -47,7 +51,7 @@ public class UserService {
     public UserResponseDto thisUser(HttpServletRequest request) throws CookieNotFoundException, UsernameNotFoundException {
         String subject = this.getUserEmailBySession(request);
 
-        User user = this.repository.findByEmail(subject).orElseThrow(() -> new UsernameNotFoundException("user not found at /users/me"));
+        User user = this.repository.findByEmailWithTransactions(subject).orElseThrow(() -> new UsernameNotFoundException("user not found at /users/me"));
         return new UserResponseDto(user);
     }
 
@@ -112,11 +116,13 @@ public class UserService {
         payerUser.setMoney(payerUser.getMoney() - data.amount());
         payeeUser.setMoney(payeeUser.getMoney() + data.amount());
 
-        List<User> updatedUsers = this.repository.saveAll(List.of(payerUser, payeeUser));
-        List<UserPaymentResponseDto> responseUsers = updatedUsers
+        List<User> savedUsers = this.repository.saveAll(List.of(payerUser, payeeUser));
+        List<UserPaymentResponseDto> responseUsers = savedUsers
                 .stream()
                 .map(UserPaymentResponseDto::new)
                 .toList();
+        
+        this.transactionRepository.save(Transaction.newTransaction(payerUser, payeeUser, data.amount()));
 
         return new PaymentResponseDto(data.amount(), responseUsers);
     }

@@ -4,7 +4,7 @@ import com.project.MyBank.domain.dtos.PaymentRequestDto;
 import com.project.MyBank.domain.User;
 import com.project.MyBank.domain.dtos.PaymentResponseDto;
 import com.project.MyBank.domain.dtos.ResourceWithContentTypeDto;
-import com.project.MyBank.domain.dtos.UserResponseDto;
+import com.project.MyBank.domain.dtos.UserWithTransactionDto;
 import com.project.MyBank.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponseDto> thisUser(HttpServletRequest request) {
+    public ResponseEntity<UserWithTransactionDto> thisUser(HttpServletRequest request) {
         return ResponseEntity.ok(this.service.thisUser(request));
     }
 

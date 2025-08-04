@@ -48,11 +48,11 @@ public class UserService {
 
     public List<User> findAll() { return this.repository.findAll(); }
 
-    public UserResponseDto thisUser(HttpServletRequest request) throws CookieNotFoundException, UsernameNotFoundException {
+    public UserWithTransactionDto thisUser(HttpServletRequest request) throws CookieNotFoundException, UsernameNotFoundException {
         String subject = this.getUserEmailBySession(request);
 
         User user = this.repository.findByEmailWithTransactions(subject).orElseThrow(() -> new UsernameNotFoundException("user not found at /users/me"));
-        return new UserResponseDto(user);
+        return new UserWithTransactionDto(user);
     }
 
     @Transactional

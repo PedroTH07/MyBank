@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -35,9 +37,11 @@ public class User {
 
     private String imageUrl;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "payer", fetch = FetchType.LAZY)
     private Set<Transaction> payerTransactions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "payee", fetch = FetchType.LAZY)
     private Set<Transaction> payeeTransactions = new HashSet<>();
 }

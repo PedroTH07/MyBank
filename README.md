@@ -20,7 +20,7 @@ cd MyBank
 
 2. Crie um arquivo .env nos moldes:
 ```env
-POSTGRES_NAME=nome
+POSTGRES_USER=user
 POSTGRES_PASSWORD=password
 POSTGRES_DB=mybank
 

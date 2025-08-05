@@ -18,7 +18,16 @@ git clone https://github.com/PedroTH07/MyBank.git
 cd MyBank
 ```
 
-2. Suba os containers com o Docker compose
+2. Crie um arquivo .env nos moldes:
+```env
+POSTGRES_NAME=nome
+POSTGRES_PASSWORD=password
+POSTGRES_DB=mybank
+
+JWT_SECRET=secret
+```
+
+3. Suba os containers com o Docker compose
 ```bash
 docker compose up -d
 ```

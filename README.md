@@ -1,6 +1,6 @@
 # MyBank
 
-Este é um simples projeto de um **banco simplificado**, com autenticação e transações monetárias entre usuários (nenhum dinheiro real envolvido).
+Este é um projeto de um **banco simplificado**, com autenticação e transações monetárias entre usuários (nenhum dinheiro real envolvido).
 
 🐳 O projeto usa containers dockers do backend feito com Java Spring, do frontend feito em Angular, e do banco de dados relacional PostgreSQL. Para orquestrar e subir os containers juntos é usado o docker compose para fazer o build do back e do frontend e subir a imagem do postgres.
 
